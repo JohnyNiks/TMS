@@ -9,7 +9,21 @@
 // 6. Создать функцию, которая бы принимала массив пользователей и отдавала бы  строку с
 // названиями марок автомобилей через запятую
 
-const users = [
+type Animal = 'cat'
+
+type Car = 'bmw' | 'audi'
+
+type User = {
+    name: string
+    phone: string
+    email: string
+    animals?: Animal[]
+    cars?: Car[]
+    hasChildren: boolean
+    hasEducation: boolean
+}
+
+const users: User[] = [
     {
         name: "Harry Felton",
         phone: "(09) 897 33 33",
@@ -35,3 +49,49 @@ const users = [
         hasEducation: false
     }
 ]
+
+// #2
+const getStringWithUserNames = (users: User[]): string =>
+    users
+        .map(({name}) => name)
+        .join(', ')
+
+console.log(getStringWithUserNames(users))
+
+// #3
+const getTotalCarsCount = (users: User[]): number =>
+    users
+        .reduce((total, user) => {
+            if ('cars' in user) {
+                return total + user.cars.length
+            }
+
+            return total
+        }, 0)
+
+
+console.log(getTotalCarsCount(users))
+
+// #4
+const getUsersWithEducation = (users: User[]): User[] =>
+    users.filter(({hasEducation}) => hasEducation)
+
+
+console.log(getUsersWithEducation(users))
+
+// #5
+const getUsersWithAnimals = (users: User[]): User[] =>
+    users.filter(({animals}) => animals?.length > 0)
+
+
+console.log(getUsersWithAnimals(users))
+
+// #6
+const getStringWithCars = (users: User[]): any =>
+    users
+        .map(({cars}) => cars)
+        .filter(Boolean)
+        .flat()
+        .join(', ')
+
+console.log(getStringWithCars(users))
