@@ -18,7 +18,35 @@
 // Например: передаем (films, 'title', 'Black Widow') и на выходе получаем фильм с id=1,
 // если передаем (films, 'year', 2011) , то получаем фильм с id=2
 
-const films = [
+type Genre = "Action" | "Sci-Fi" | "Adventure" | "Drama" | "Fantasy" | "Family"
+
+type Country = "United States" | "United Kingdom" | "United Kingdom, United States" | "United States, United Kingdom"
+
+type MediaType = 'movie'
+
+type Film = {
+    id?: number
+    title: string
+    year: number
+    released: string
+    runtime: string
+    genre: Genre[]
+    director: string
+    writer: string
+    actors: string[]
+    plot: string
+    country: Country
+    poster: string
+    imdbRating: number
+    imdbVotes: number
+    type?: MediaType
+    boxOffice: string
+    production: string
+}
+
+type PartialFilm = Pick<Film, 'id' | 'title' | 'released' | 'plot'>
+
+const films: Film[] = [
     {
         id: 1,
         title: "Black Widow",
@@ -112,3 +140,80 @@ const films = [
         production: "1492 Pictures, Heyday Films, Warner Brothers",
     }
 ]
+
+// Util for #1 and #2
+const getUniqueValuesByKey = <T>(array: Film[], key: string): T[] => {
+    const values = array
+        .map((item) => item[key])
+        .flat()
+
+    return [...new Set(values)]
+}
+
+// #1
+const getUniqueGenres = (films: Film[]): Genre[] => {
+    return getUniqueValuesByKey(films, 'genre')
+}
+
+console.log(getUniqueGenres(films))
+
+// #2
+const getUniqueActors = (films: Film[]): string[] => {
+    return getUniqueValuesByKey(films, 'actors')
+}
+
+console.log(getUniqueActors(films))
+
+// #3
+const sortFilmsByRatings = (films: Film[]): Film[] =>
+    films
+        .sort((a,b) => b.imdbRating - a.imdbRating)
+
+
+console.log(sortFilmsByRatings(films))
+
+// #4
+const getFilmsWithPartialInfo = (films: Film[]): PartialFilm[] =>
+    films
+        .map(({id, title, released, plot }) => ({
+            id,
+            title,
+            released,
+            plot
+        }))
+
+console.log(getFilmsWithPartialInfo(films))
+
+// #5
+const getFilmsByYear = (films: Film[], number: number): Film[] =>
+    films
+        .filter(({year}) => year === number)
+
+console.log(getFilmsByYear(films, 2011))
+
+// Util for #6 and #7
+const isValueInString = (string: string, value: string): boolean =>
+    string
+        .toLowerCase()
+        .includes(value.toLowerCase())
+
+// #6
+const getFilmsByName = (films: Film[], name: string): Film[] =>
+    films
+        .filter(({title}) => isValueInString(title, name))
+
+console.log(getFilmsByName(films, 'black'))
+
+// #7
+const getFilmsByNameAndPlot = (films: Film[], string: string): Film[] =>
+    films
+        .filter(({title, plot}) => isValueInString(title, string) || isValueInString(plot, string))
+
+console.log(getFilmsByNameAndPlot(films, 'Luke'))
+
+// #8
+const getFilmByKeyAndValue = (films: Film[], key: string, value: string | number): Film[] =>
+    films
+        .filter(film => film[key] === value)
+
+console.log(getFilmByKeyAndValue(films, 'director', 'David Yates'))
